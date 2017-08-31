@@ -3599,6 +3599,7 @@ hardenedbsd/hbsd_pax_aslr.c		optional pax pax_aslr
 hardenedbsd/hbsd_pax_hardening.c	optional pax pax_hardening
 hardenedbsd/hbsd_pax_noexec.c		optional pax pax_noexec
 hardenedbsd/hbsd_pax_segvguard.c	optional pax pax_segvguard
+hardenedbsd/hbsd_hbsdcontrol.c		optional pax pax_hbsdcontrol
 #
 isa/isa_if.m			standard
 isa/isa_common.c		optional isa

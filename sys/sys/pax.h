@@ -115,6 +115,11 @@ void pax_init_prison(struct prison *pr);
 void pax_print_hbsd_context(void);
 
 /*
+ * HardenedBSD's hbsdcontol related functions
+ */
+int pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp, pax_flag_t *flags);
+
+/*
  * ASLR related functions
  */
 bool pax_aslr_active(struct proc *p);

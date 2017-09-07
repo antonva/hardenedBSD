@@ -117,6 +117,7 @@ void pax_print_hbsd_context(void);
 /*
  * HardenedBSD's hbsdcontol related functions
  */
+int pax_control_acl_set_flags(struct thread *td, struct image_params *imgp, const pax_flag_t req_flags);
 int pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp);
 
 /*

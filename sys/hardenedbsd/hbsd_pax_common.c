@@ -233,7 +233,7 @@ pax_get_requested_flags(struct image_params *imgp)
 
 	req_flags = 0;
 
-#if defined(PAX_ACL) && defined(PAX_HBSDCONTROL)
+#if defined(PAX_CONTROL_ACL) && defined(PAX_HBSDCONTROL)
 	req_flags = (imgp->pax.req_acl_flags & PAX_NOTE_PREFER_ACL) ?
 	    imgp->pax.req_acl_flags : imgp->pax.req_extattr_flags;
 
@@ -241,7 +241,7 @@ pax_get_requested_flags(struct image_params *imgp)
 		req_flags = imgp->pax.req_acl_flags;
 #elif defined(PAX_HBSDCONTROL)
 	req_flags =  imgp->pax.req_extattr_flags ? imgp->pax.req_extattr_flags : 0;
-#elif defined(PAX_ACL)
+#elif defined(PAX_CONTROL_ACL)
 	req_flags = imgp->pax.req_acl_flags ? imgp->pax.req_acl_flags : 0;
 #endif
 
@@ -262,8 +262,8 @@ pax_elf(struct thread *td, struct image_params *imgp)
 {
 	pax_flag_t flags, mode;
 
-#ifdef PAX_ACL
-#ifdef PAX_ACL_OVERRIDE_SUPPORT
+#ifdef PAX_CONTROL_ACL
+#ifdef PAX_CONTROL_ACL_OVERRIDE_SUPPORT
 	pax_get_flags_td(td, &flags);
 	if ((flags & PAX_NOTE_PREFER_ACL) == PAX_NOTE_PREFER_ACL)
 		return (0);
@@ -337,8 +337,8 @@ pax_elf(struct thread *td, struct image_params *imgp)
 		return (ENOEXEC);
 	}
 
-#ifdef PAX_ACL
-#ifdef PAX_ACL_OVERRIDE_SUPPORT
+#ifdef PAX_CONTROL_ACL
+#ifdef PAX_CONTROL_ACL_OVERRIDE_SUPPORT
 	if ((mode & PAX_NOTE_PREFER_ACL) == PAX_NOTE_PREFER_ACL)
 		flags |= PAX_NOTE_PREFER_ACL;
 	else

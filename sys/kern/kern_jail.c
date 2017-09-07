@@ -2289,7 +2289,7 @@ prison_remove_one(struct prison *pr)
 	int deuref;
 
 #ifdef MAC
-#ifdef PAX_ACL
+#ifdef PAX_CONTROL_ACL
 	mac_prison_destroy(pr);
 #endif
 #endif

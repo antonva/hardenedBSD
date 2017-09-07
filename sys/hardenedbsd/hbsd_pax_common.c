@@ -68,6 +68,8 @@ static int pax_check_conflicting_modes(const pax_flag_t mode);
 
 CTASSERT((sizeof((struct proc *)NULL)->p_pax) == sizeof(pax_flag_t));
 CTASSERT((sizeof((struct thread *)NULL)->td_pax) == sizeof(pax_flag_t));
+CTASSERT((sizeof((struct image_params *)NULL)->pax.req_acl_flags) == sizeof(pax_flag_t));
+CTASSERT((sizeof((struct image_params *)NULL)->pax.req_extattr_flags) == sizeof(pax_flag_t));
 
 /*
  * The PAX_HARDENING_{,NO}SHLIBRANDOM flags are

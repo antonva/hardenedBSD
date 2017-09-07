@@ -38,7 +38,6 @@
 
 #define MAXSHELLCMDLEN	PAGE_SIZE
 
-struct pax_flags_t;
 struct ucred;
 
 struct image_args {
@@ -89,8 +88,8 @@ struct image_params {
 	struct ucred *newcred;		/* new credentials if changing */
 	bool credential_setid;		/* true if becoming setid */
 	struct _pax {
-		pax_flags_t req_acl_flags; /* Requested PaX settings from ACL */
-		pax_flags_t req_extattr_flags; /* Req. PaX setting from extattr */
+		uint32_t req_acl_flags; /* Requested PaX settings from ACL */
+		uint32_t req_extattr_flags; /* Req. PaX setting from extattr */
 	} pax;
 };
 

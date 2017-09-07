@@ -381,7 +381,8 @@ do_execve(struct thread *td, struct image_args *args, struct mac *mac_p)
 #endif
 	static const char fexecv_proc_title[] = "(fexecv)";
 #ifdef PAX
-	pax_flag_t pax_settings = 0;
+	image_params.pax.req_acl_flags = 0;
+	image_params.pax.req_extattr_flags = 0;
 #endif
 
 	imgp = &image_params;
@@ -470,13 +471,13 @@ interpret:
 		goto exec_fail_dealloc;
 
 #ifdef PAX_HBSDCONTROL
-	error = pax_hbsdcontrol_parse_fsea_flags(td, imgp, &pax_settings);
+	error = pax_hbsdcontrol_parse_fsea_flags(td, imgp);
 	if (error)
 		goto exec_fail_dealloc;
 #endif
 
 #ifdef PAX
-	error = pax_elf(td, imgp, pax_settings);
+	error = pax_elf(td, imgp);
 	if (error) {
 		goto exec_fail_dealloc;
 	}

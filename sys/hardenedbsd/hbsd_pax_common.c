@@ -221,19 +221,41 @@ pax_check_conflicting_modes(const pax_flag_t mode)
 	return (0);
 }
 
+static pax_flag_t
+pax_get_requested_flags(struct image_params *imgp)
+{
+	pax_flag_t req_flags;
+
+	req_flags = 0;
+
+#if defined(PAX_ACL) && defined(PAX_HBSDCONTROL)
+	req_flags = (imgp->pax.req_acl_flags & PAX_NOTE_PREFER_ACL) ?
+	    imgp->pax.req_acl_flags : imgp->pax.req_extattr_flags;
+
+	if (req_flags == 0 && imgp->pax.req_acl_flags != 0)
+		req_flags = imgp->pax.req_acl_flags;
+#elif defined(PAX_HBSDCONTROL)
+	req_flags =  imgp->pax.req_extattr_flags ? imgp->pax.req_extattr_flags : 0;
+#elif defined(PAX_ACL)
+	req_flags = imgp->pax.req_acl_flags ? imgp->pax.req_acl_flags : 0;
+#endif
+
+	return (req_flags);
+}
+
 /*
  * @bried Initialize the new process PaX state
  *
+ * @param td		Pointer to the current thread.
  * @param imgp		Executable image's structure.
- * @param mode		Requested mode.
  *
  * @return		ENOEXEC on fail
  * 			0 on success
  */
 int
-pax_elf(struct thread *td, struct image_params *imgp, const pax_flag_t mode)
+pax_elf(struct thread *td, struct image_params *imgp)
 {
-	pax_flag_t flags;
+	pax_flag_t flags, mode;
 
 #ifdef PAX_ACL
 #ifdef PAX_ACL_OVERRIDE_SUPPORT
@@ -242,6 +264,8 @@ pax_elf(struct thread *td, struct image_params *imgp, const pax_flag_t mode)
 		return (0);
 #endif
 #endif
+
+	mode = pax_get_requested_flags(imgp);
 
 	flags = 0;
 

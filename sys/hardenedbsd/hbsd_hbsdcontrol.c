@@ -92,7 +92,7 @@ SYSCTL_INT(_hardening_pax_hbsdcontrol, OID_AUTO, status,
 #endif /* PAX_SYSCTLS */
 
 int
-pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp, pax_flag_t *flags)
+pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp)
 {
 	struct uio uio;
 	struct iovec iov;
@@ -107,7 +107,7 @@ pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp, p
 	int error;
 
 	if (!pax_hbsdcontrol_active()) {
-		*flags = 0;
+		imgp->pax.req_extattr_flags = 0;
 		return (0);
 	}
 
@@ -131,11 +131,18 @@ pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp, p
 	 *   - no FS-EA assigned for the file.
 	 */
 	if (error != 0 || fsea_list_size == 0) {
+		/* Use system defaults. */
+		imgp->pax.req_extattr_flags = 0;
+
 		if (error == EOPNOTSUPP) {
-			error = 0;
-			parsed_flags = 0;
+			/*
+			 * Use system default, without
+			 * returning an error.
+			 */
+			return (0);
 		}
-		goto out;
+
+		return (error);
 	}
 
 	if (fsea_list_size > IOSIZE_MAX) {
@@ -258,7 +265,7 @@ out:
 	if (error)
 		parsed_flags = 0;
 
-	*flags = parsed_flags;
+	imgp->pax.req_extattr_flags = parsed_flags;
 
 	return (error);
 }

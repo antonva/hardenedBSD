@@ -80,6 +80,11 @@ CTASSERT(PAX_NOTE_NOSHLIBRANDOM == PAX_HARDENING_NOSHLIBRANDOM);
 SYSCTL_NODE(_hardening, OID_AUTO, pax, CTLFLAG_RD, 0,
     "PaX (exploit mitigation) features.");
 
+#if defined(PAX_CONTROL_ACL) || defined(PAX_CONTROL_EXTATTR)
+SYSCTL_NODE(_hardening, OID_AUTO, control, CTLFLAG_RD, 0,
+    "PaX features control subnode.");
+#endif
+
 SYSCTL_U64(_hardening, OID_AUTO, version, CTLFLAG_RD|CTLFLAG_CAPRD,
     SYSCTL_NULL_U64_PTR, __HardenedBSD_version, "HardenedBSD version");
 

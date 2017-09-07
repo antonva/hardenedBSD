@@ -470,8 +470,8 @@ interpret:
 	if (error)
 		goto exec_fail_dealloc;
 
-#ifdef PAX_HBSDCONTROL
-	error = pax_hbsdcontrol_parse_fsea_flags(td, imgp);
+#ifdef PAX_CONTROL_EXTATTR
+	error = pax_control_extattr_parse_flags(td, imgp);
 	if (error)
 		goto exec_fail_dealloc;
 #endif

@@ -233,13 +233,13 @@ pax_get_requested_flags(struct image_params *imgp)
 
 	req_flags = 0;
 
-#if defined(PAX_CONTROL_ACL) && defined(PAX_HBSDCONTROL)
+#if defined(PAX_CONTROL_ACL) && defined(PAX_CONTROL_EXTATTR)
 	req_flags = (imgp->pax.req_acl_flags & PAX_NOTE_PREFER_ACL) ?
 	    imgp->pax.req_acl_flags : imgp->pax.req_extattr_flags;
 
 	if (req_flags == 0 && imgp->pax.req_acl_flags != 0)
 		req_flags = imgp->pax.req_acl_flags;
-#elif defined(PAX_HBSDCONTROL)
+#elif defined(PAX_CONTROL_EXTATTR)
 	req_flags =  imgp->pax.req_extattr_flags ? imgp->pax.req_extattr_flags : 0;
 #elif defined(PAX_CONTROL_ACL)
 	req_flags = imgp->pax.req_acl_flags ? imgp->pax.req_acl_flags : 0;

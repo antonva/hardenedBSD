@@ -49,12 +49,12 @@ __FBSDID("$FreeBSD$");
 #include <sys/uio.h>
 #include <sys/vnode.h>
 
-FEATURE(hbsdcontrol, "HardenedBSD's FS-EA based control subsystem.");
+FEATURE(hbsd_control_extattr, "HardenedBSD's extattr based control subsystem.");
 
-static int pax_hbsdcontrol_status = PAX_FEATURE_SIMPLE_ENABLED;
-TUNABLE_INT("hardening.hbsdcontrol.status", &pax_hbsdcontrol_status);
+static int pax_control_extattr_status = PAX_FEATURE_SIMPLE_ENABLED;
+TUNABLE_INT("hardening.control.extattr.status", &pax_control_extattr_status);
 
-static bool pax_hbsdcontrol_active(void);
+static bool pax_control_extattr_active(void);
 
 struct pax_feature_entry {
 	const char		*fs_ea_attribute;
@@ -78,21 +78,21 @@ const struct pax_feature_entry pax_features[] = {
 };
 
 #ifdef PAX_SYSCTLS
-SYSCTL_DECL(_hardening_pax);
+SYSCTL_DECL(_hardening_control);
 
-SYSCTL_NODE(_hardening_pax, OID_AUTO, hbsdcontrol, CTLFLAG_RD, 0,
-    "FS-EA based control subsystem.");
+SYSCTL_NODE(_hardening_control, OID_AUTO, extattr, CTLFLAG_RD, 0,
+    "extattr based control subsystem.");
 
-SYSCTL_INT(_hardening_pax_hbsdcontrol, OID_AUTO, status,
+SYSCTL_INT(_hardening_control_extattr, OID_AUTO, status,
     CTLFLAG_RDTUN|CTLFLAG_SECURE,
-    &pax_hbsdcontrol_status, 0,
+    &pax_control_extattr_status, 0,
     "status: "
     "0 - disabled, "
     "1 - enabled");
 #endif /* PAX_SYSCTLS */
 
 int
-pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp)
+pax_control_extattr_parse_flags(struct thread *td, struct image_params *imgp)
 {
 	struct uio uio;
 	struct iovec iov;
@@ -106,7 +106,7 @@ pax_hbsdcontrol_parse_fsea_flags(struct thread *td, struct image_params *imgp)
 	int i, j;
 	int error;
 
-	if (!pax_hbsdcontrol_active()) {
+	if (!pax_control_extattr_active()) {
 		imgp->pax.req_extattr_flags = 0;
 		return (0);
 	}
@@ -271,36 +271,36 @@ out:
 }
 
 static bool
-pax_hbsdcontrol_active(void)
+pax_control_extattr_active(void)
 {
 
-	if ((pax_hbsdcontrol_status & PAX_FEATURE_SIMPLE_ENABLED) == PAX_FEATURE_SIMPLE_ENABLED)
+	if ((pax_control_extattr_status & PAX_FEATURE_SIMPLE_ENABLED) == PAX_FEATURE_SIMPLE_ENABLED)
 		return (true);
 
-	if ((pax_hbsdcontrol_status & PAX_FEATURE_SIMPLE_DISABLED) == PAX_FEATURE_SIMPLE_DISABLED)
+	if ((pax_control_extattr_status & PAX_FEATURE_SIMPLE_DISABLED) == PAX_FEATURE_SIMPLE_DISABLED)
 		return (false);
 
 	return (true);
 }
 
 static void
-pax_hbsdcontrol_sysinit(void)
+pax_control_extattr_sysinit(void)
 {
 
-	switch (pax_hbsdcontrol_status) {
+	switch (pax_control_extattr_status) {
 	case PAX_FEATURE_SIMPLE_DISABLED:
 	case PAX_FEATURE_SIMPLE_ENABLED:
 		break;
 	default:
-		printf("[HBSD CONTROL] WARNING, invalid settings in loader.conf!"
-		    " (pax_hbsdcontrol_status = %d)\n", pax_hbsdcontrol_status);
-		pax_hbsdcontrol_status = PAX_FEATURE_SIMPLE_ENABLED;
+		printf("[HBSD CONTROL / EXTATTR] WARNING, invalid settings in loader.conf!"
+		    " (pax_hbsdcontrol_status = %d)\n", pax_control_extattr_status);
+		pax_control_extattr_status = PAX_FEATURE_SIMPLE_ENABLED;
 		break;
 	}
 	if (bootverbose) {
-		printf("[HBSD CONTROL] status: %s\n",
-		    pax_status_simple_str[pax_hbsdcontrol_status]);
+		printf("[HBSD CONTROL / EXTATTR] status: %s\n",
+		    pax_status_simple_str[pax_control_extattr_status]);
 	}
 }
-SYSINIT(pax_hbsdcontrol, SI_SUB_PAX, SI_ORDER_SECOND, pax_hbsdcontrol_sysinit, NULL);
+SYSINIT(pax_control_extattr, SI_SUB_PAX, SI_ORDER_SECOND, pax_control_extattr_sysinit, NULL);
 
